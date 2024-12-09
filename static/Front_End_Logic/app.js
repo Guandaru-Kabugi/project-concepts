@@ -1,26 +1,66 @@
 const apiBaseUrl = "http://127.0.0.1:8000/images";
 
-// Create a new image
+// Function to fetch CSRF token from cookies
+function getCSRFToken() {
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    if (cookie.trim().startsWith('csrftoken=')) {
+      return cookie.trim().split('=')[1];
+    }
+  }
+  return '';
+}
+
+// Handle the form submission
 document.getElementById("create-image-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const title = document.getElementById("title").value;
-  const slug = document.getElementById("slug").value;
-  const imageUrl = document.getElementById("image-url").value;
+  
+  // Get the form values
+  const name = document.getElementById("name").value;
+  const slug_field = document.getElementById("slug_field").value;
+  const page_location = document.getElementById("page_location").value;
+  const section = document.getElementById("section").value;
+  const image_url = document.getElementById("image_url").value;
+  const imageFile = document.getElementById("image").files[0];
+
+  // Check if a file was selected
+  if (!imageFile) {
+    alert("Please select an image file.");
+    return;
+  }
 
   try {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('slug_field', slug_field);
+    formData.append('page_location', page_location);
+    formData.append('section', section);
+    formData.append('image_url', image_url);
+    formData.append('image', imageFile);
+
     const response = await fetch(`${apiBaseUrl}/create_image/`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken(), // Include CSRF token
       },
-      body: JSON.stringify({ title, slug, image: imageUrl }),
+      body: formData,
     });
-    const data = await response.json();
-    alert(response.ok ? "Image created successfully!" : `Error: ${JSON.stringify(data.errors)}`);
+
+    const result = await response.json();
+
+    if (response.ok) {
+      document.getElementById("response-message").innerText = result.message;
+      console.log("Server Response:", result);
+    } else {
+      document.getElementById("response-message").innerText = `Error: ${JSON.stringify(result.errors)}`;
+      console.error("Server Response Error:", result.errors);
+    }
   } catch (error) {
     console.error("Error creating image:", error);
+    document.getElementById("response-message").innerText = "An error occurred.";
   }
 });
+
 
 // Fetch all images
 document.getElementById("fetch-images").addEventListener("click", async () => {
@@ -38,17 +78,20 @@ document.getElementById("fetch-images").addEventListener("click", async () => {
       const imageCard = document.createElement("div");
       imageCard.className = "image-card";
 
-      // Use title as the slug fallback
-      const slug = item.title || "Unknown slug";
+      // Correctly map the slug from the server response
+      const slug = item.slug_field || "Unknown slug";
+      const pageLocation = item.page_location || "Unknown";
+      const section = item.section || "Unknown";
 
+      // Handle image path
       const imageSrc = item.image.startsWith("http") ? item.image : `/media/${item.image}`;
 
       imageCard.innerHTML = `
-        <h3>${item.title}</h3>
-        <img src="${imageSrc}" alt="${item.title}" style="max-width: 100%; height: auto;">
+        <h3>${item.name}</h3>
+        <img src="${imageSrc}" alt="${item.name}" style="max-width: 100%; height: auto;">
         <p>Slug: ${slug}</p>
-        <p>Page Location: ${item.page_location || "Unknown"}</p>
-        <p>Section: ${item.section || "Unknown"}</p>
+        <p>Page Location: ${pageLocation}</p>
+        <p>Section: ${section}</p>
       `;
       imageList.appendChild(imageCard);
     }

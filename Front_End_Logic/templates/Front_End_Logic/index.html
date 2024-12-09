@@ -26,33 +26,32 @@
 <body>
   <h1>Wildlife Image Manager</h1>
   
-  <!-- Form to create a new image -->
-  <h2>Create New Image</h2>
-  <form id="create-image-form" enctype="multipart/form-data">
-    <label>
-      Name:
-      <input type="text" id="name" required>
-    </label><br>
-    <label>
-      Page Location:
-      <input type="text" id="page_location" required>
-    </label><br>
-    <label>
-      Section:
-      <input type="text" id="section" required>
-    </label><br>
-    <label>
-      Image URL:
-      <input type="url" id="image_url">
-    </label><br>
-    <label>
-      Upload Image:
-      <input type="file" id="image" accept="image/*" required>
-    </label><br>
-    <button type="submit">Submit</button>
-  </form>
+  <!-- Create Image Section -->
+<h2>Create New Image</h2>
+<form id="create-image-form">
+  <label for="name">Name:</label>
+  <input type="text" id="name" required><br><br>
   
-  <hr>
+  {% comment %} <label for="slug_field">Slug:</label>
+  <input type="text" id="slug_field" required><br><br> {% endcomment %}
+  
+  <label for="page_location">Page Location:</label>
+  <input type="text" id="page_location" required><br><br>
+  
+  <label for="section">Section:</label>
+  <input type="text" id="section" required><br><br>
+  
+  <label for="image_url">Image URL:</label>
+  <input type="url" id="image_url" required><br><br>
+  
+  <label for="image">Upload Image:</label>
+  <input type="file" id="image" accept="image/*" required><br><br>
+  
+  <button type="submit">Submit</button>
+</form>
+
+<div id="response-message"></div>
+
   
   <!-- Section to list all images -->
   <h2>All Images</h2>
