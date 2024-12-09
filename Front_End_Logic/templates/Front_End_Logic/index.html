@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+
+{% block title %}Wildlife Images{% endblock title %}
+{% load static %}
+
+<head>
+    {% block content %}
+  <title>Wildlife Images</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #image-list {
+      margin-top: 20px;
+    }
+    .image-card {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Wildlife Image Manager</h1>
+  
+  <!-- Form to create a new image -->
+  <h2>Create New Image</h2>
+  <form id="create-image-form" enctype="multipart/form-data">
+    <label>
+      Name:
+      <input type="text" id="name" required>
+    </label><br>
+    <label>
+      Page Location:
+      <input type="text" id="page_location" required>
+    </label><br>
+    <label>
+      Section:
+      <input type="text" id="section" required>
+    </label><br>
+    <label>
+      Image URL:
+      <input type="url" id="image_url">
+    </label><br>
+    <label>
+      Upload Image:
+      <input type="file" id="image" accept="image/*" required>
+    </label><br>
+    <button type="submit">Submit</button>
+  </form>
+  
+  <hr>
+  
+  <!-- Section to list all images -->
+  <h2>All Images</h2>
+  <button id="fetch-images">Load Images</button>
+  <div id="image-list"></div>
+  
+  <hr>
+  
+  <!-- Section to get a specific image -->
+  <h2>Get an Image</h2>
+  <form id="get-image-form">
+    <label>
+      Slug:
+      <input type="text" id="image-slug" required>
+    </label>
+    <button type="submit">Fetch Image</button>
+  </form>
+  <div id="single-image-result"></div>
+  
+  <!-- Ensure this path is correct -->
+  <script src="{% static 'Front_End_Logic/app.js' %}"></script>
+  
+
+{% endblock content %}
