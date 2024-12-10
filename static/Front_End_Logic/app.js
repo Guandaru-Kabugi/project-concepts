@@ -1,64 +1,46 @@
 const apiBaseUrl = "http://127.0.0.1:8000/images";
 
-// Function to fetch CSRF token from cookies
-function getCSRFToken() {
-  const cookies = document.cookie.split(';');
-  for (let cookie of cookies) {
-    if (cookie.trim().startsWith('csrftoken=')) {
-      return cookie.trim().split('=')[1];
-    }
-  }
-  return '';
-}
-
-// Handle the form submission
-document.getElementById("create-image-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('image-form');
+  const responseMessage = document.getElementById('response-message');
   
-  // Get the form values
-  const name = document.getElementById("name").value;
-  const slug_field = document.getElementById("slug_field").value;
-  const page_location = document.getElementById("page_location").value;
-  const section = document.getElementById("section").value;
-  const image_url = document.getElementById("image_url").value;
-  const imageFile = document.getElementById("image").files[0];
+  // Extract CSRF token from cookies
+  const getCSRFToken = () => {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+          cookie = cookie.trim();
+          if (cookie.startsWith('csrftoken=')) {
+              return cookie.split('=')[1];
+          }
+      }
+      return '';
+  };
 
-  // Check if a file was selected
-  if (!imageFile) {
-    alert("Please select an image file.");
-    return;
-  }
+  form.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-  try {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('slug_field', slug_field);
-    formData.append('page_location', page_location);
-    formData.append('section', section);
-    formData.append('image_url', image_url);
-    formData.append('image', imageFile);
+      const formData = new FormData(form);
 
-    const response = await fetch(`${apiBaseUrl}/create_image/`, {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": getCSRFToken(), // Include CSRF token
-      },
-      body: formData,
-    });
+      try {
+          const response = await fetch('/create_image/', {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': getCSRFToken(), // Send CSRF token in request header
+              },
+              body: formData,
+          });
 
-    const result = await response.json();
+          const data = await response.json();
 
-    if (response.ok) {
-      document.getElementById("response-message").innerText = result.message;
-      console.log("Server Response:", result);
-    } else {
-      document.getElementById("response-message").innerText = `Error: ${JSON.stringify(result.errors)}`;
-      console.error("Server Response Error:", result.errors);
-    }
-  } catch (error) {
-    console.error("Error creating image:", error);
-    document.getElementById("response-message").innerText = "An error occurred.";
-  }
+          if (response.ok) {
+              responseMessage.innerHTML = `<p style="color: green;">Image uploaded successfully! Response: ${JSON.stringify(data)}</p>`;
+          } else {
+              responseMessage.innerHTML = `<p style="color: red;">Error: ${JSON.stringify(data.errors)}</p>`;
+          }
+      } catch (error) {
+          responseMessage.innerHTML = `<p style="color: red;">Unexpected error occurred: ${error.message}</p>`;
+      }
+  });
 });
 
 

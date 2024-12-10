@@ -1,0 +1,64 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Welcome</h1>
+    <form action="{% url 'create_newimage' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+    </form>
+</body> {% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <script>
+        // Dynamically fetch CSRF token from cookies
+        function getCookie(name) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    return decodeURIComponent(cookie.split('=')[1]);
+                }
+            }
+            return null;
+        }
+        const csrftoken = getCookie('csrftoken');
+      </script>
+</head>
+<body>
+    <h1>Upload Image</h1>
+    
+    <form id="image-form" enctype="multipart/form-data">
+        <label for="name">Name of Image:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="page_location">Page Location:</label>
+        <input type="text" id="page_location" name="page_location" required><br><br>
+
+        <label for="section">Section:</label>
+        <input type="text" id="section" name="section" required><br><br>
+
+        <label for="image_url">Image URL:</label>
+        <input type="url" id="image_url" name="image_url"><br><br>
+
+        <label for="image">Upload Image:</label>
+        <input type="file" id="image" name="image" required><br><br>
+
+        <button type="submit">Save</button>
+    </form>
+
+    <div id="response-message" style="margin-top: 20px;"></div>
+
+    <script src="{% static 'Front_End_Logic/app.js' %}"></script>
+</body>
+</html>
