@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Posts</title>
+</head>
+<body>
+    <h1>Today's Instagram Posts</h1>
+    {% if posts %}
+        <div class="posts">
+            {% for post in posts %}
+                <div class="post">
+                    {% if post.media_type == "IMAGE" %}
+                        <img src="{{ post.media_url }}" alt="{{ post.caption }}" style="max-width: 100%; height: auto;">
+                    {% elif post.media_type == "VIDEO" %}
+                        <video controls style="max-width: 100%; height: auto;">
+                            <source src="{{ post.media_url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                    <p>{{ post.caption }}</p>
+                    <p><small>Posted at: {{ post.timestamp }}</small></p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No posts available for today.</p>
+    {% endif %}
+</body>
+</html>
