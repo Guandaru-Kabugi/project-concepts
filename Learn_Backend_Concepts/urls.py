@@ -22,4 +22,5 @@ urlpatterns = [
     path('accounts/',include('ACCOUNTS.urls')),
     path('images/',include('API.urls')),
     path('',include('Front_End_Logic.urls')),
+    path('celery/',include('celery.urls')),
 ]

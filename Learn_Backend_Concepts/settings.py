@@ -19,6 +19,12 @@ DB_HOST = os.getenv('DB_HOST')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_USER = os.getenv('DB_USER')
 DB_PORT = os.getenv('DB_PORT')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Replace with your Mailgun SMTP login
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')       # Replace with your Mailgun SMTP password
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL') # Customize as needed
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,6 +57,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'Front_End_Logic',
+    'celery'
 ]
 
 MIDDLEWARE = [
@@ -164,3 +171,13 @@ REST_FRAMEWORK = {
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = EMAIL_HOST
+EMAIL_PORT = EMAIL_PORT
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = EMAIL_HOST_USER  # Replace with your Mailgun SMTP login
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD       # Replace with your Mailgun SMTP password
+DEFAULT_FROM_EMAIL = f'sending mail <postmaster@{DEFAULT_FROM_EMAIL}.mailgun.org>' # Customize as needed
